@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeSip — Threat Heatmap</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav scrolled">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="16" fill="#00FFB2"/>
+        <path d="M16 6 C16 6 10 12 10 18 C10 21.3 12.7 24 16 24 C19.3 24 22 21.3 22 18 C22 12 16 6 16 6Z" fill="#0A0F1E"/>
+        <circle cx="16" cy="17" r="3" fill="#00FFB2"/>
+      </svg>
+      <span>SafeSip</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="simulator.html">Simulator</a></li>
+      <li><a href="alerts.html">Alerts</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header-inner">
+        <div>
+          <h1 class="page-title">Safety Heatmap</h1>
+          <p class="page-subtitle">Anonymized threat hotspots from the SafeSip network — last 30 days</p>
+        </div>
+        <div class="status-bar">
+          <span class="pulse-dot"></span>
+          Live · 2,341 Reports Mapped
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:32px; padding-bottom:60px;">
+
+    <!-- Controls -->
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; align-items:center;">
+      <select id="filterSubstance" onchange="redrawMap()" style="background:var(--surface); border:1px solid var(--border); color:var(--text); padding:10px 16px; border-radius:8px; font-family:var(--font-head); font-size:14px; cursor:pointer;">
+        <option value="all">All Substances</option>
+        <option value="ghb">GHB Only</option>
+        <option value="ketamine">Ketamine Only</option>
+        <option value="rohypnol">Rohypnol Only</option>
+        <option value="fentanyl">Fentanyl Only</option>
+        <option value="mdma">MDMA Only</option>
+      </select>
+      <select id="filterTime" onchange="redrawMap()" style="background:var(--surface); border:1px solid var(--border); color:var(--text); padding:10px 16px; border-radius:8px; font-family:var(--font-head); font-size:14px; cursor:pointer;">
+        <option value="30">Last 30 Days</option>
+        <option value="7">Last 7 Days</option>
+        <option value="1">Last 24 Hours</option>
+      </select>
+      <div style="margin-left:auto; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">All data anonymized · no personal info shared</div>
+    </div>
+
+    <!-- Map -->
+    <div class="map-container" style="margin-bottom:24px;">
+      <canvas id="heatCanvas"></canvas>
+      <div class="map-legend">
+        <div class="map-legend-title">Threat Density</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FF3A5C;"></div> Critical (5+ reports)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FF9D2F;"></div> High (2–4 reports)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FFD93D;"></div> Low (1 report)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(0,255,178,0.5);"></div> Safe venue</div>
+      </div>
+    </div>
+
+    <!-- Venue list -->
+    <h2 style="font-size:1rem; font-weight:700; margin-bottom:16px;">Top Risk Venues</h2>
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden;">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Venue</th>
+            <th>City</th>
+            <th>Reports</th>
+            <th>Most Common</th>
+            <th>Risk Level</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight:600;">Club Aether</td><td>New York, NY</td><td style="font-family:var(--font-mono);">34</td><td>GHB</td><td><span class="feed-badge critical">CRITICAL</span></td></tr>
+          <tr><td style="font-weight:600;">The Monarch</td><td>Los Angeles, CA</td><td style="font-family:var(--font-mono);">28</td><td>Rohypnol</td><td><span class="feed-badge danger">HIGH</span></td></tr>
+          <tr><td style="font-weight:600;">Neon District</td><td>Miami, FL</td><td style="font-family:var(--font-mono);">22</td><td>Ketamine</td><td><span class="feed-badge danger">HIGH</span></td></tr>
+          <tr><td style="font-weight:600;">Velvet Underground</td><td>Chicago, IL</td><td style="font-family:var(--font-mono);">18</td><td>GHB</td><td><span class="feed-badge warn">MEDIUM</span></td></tr>
+          <tr><td style="font-weight:600;">The Grand</td><td>Austin, TX</td><td style="font-family:var(--font-mono);">14</td><td>Fentanyl</td><td><span class="feed-badge warn">MEDIUM</span></td></tr>
+          <tr><td style="font-weight:600;">Sapphire Lounge</td><td>Seattle, WA</td><td style="font-family:var(--font-mono);">9</td><td>MDMA</td><td><span class="feed-badge warn">MEDIUM</span></td></tr>
+          <tr><td style="font-weight:600;">The Fox</td><td>Atlanta, GA</td><td style="font-family:var(--font-mono);">6</td><td>Ketamine</td><td><span class="feed-badge safe">LOW</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+// Heatmap using Canvas
+const canvas = document.getElementById('heatCanvas');
+const ctx = canvas.getContext('2d');
+
+// Hotspot data [x%, y%, intensity, label]
+const BASE_HOTSPOTS = [
+  [0.15, 0.3, 9, 'NYC'],
+  [0.12, 0.35, 7, 'NYC Downtown'],
+  [0.08, 0.55, 5, 'Philadelphia'],
+  [0.18, 0.62, 6, 'DC'],
+  [0.22, 0.72, 4, 'Charlotte'],
+  [0.28, 0.78, 8, 'Atlanta'],
+  [0.35, 0.75, 5, 'Nashville'],
+  [0.42, 0.68, 9, 'Chicago'],
+  [0.44, 0.55, 3, 'Detroit'],
+  [0.48, 0.60, 4, 'Indianapolis'],
+  [0.38, 0.82, 6, 'New Orleans'],
+  [0.45, 0.88, 10, 'Miami'],
+  [0.48, 0.78, 5, 'Tampa'],
+  [0.55, 0.80, 4, 'Houston'],
+  [0.52, 0.73, 8, 'Austin'],
+  [0.50, 0.65, 3, 'Dallas'],
+  [0.55, 0.55, 4, 'Kansas City'],
+  [0.45, 0.45, 3, 'Minneapolis'],
+  [0.62, 0.60, 5, 'Denver'],
+  [0.70, 0.52, 3, 'Salt Lake City'],
+  [0.72, 0.60, 4, 'Las Vegas'],
+  [0.72, 0.72, 6, 'Phoenix'],
+  [0.78, 0.68, 4, 'Albuquerque'],
+  [0.75, 0.55, 3, 'Reno'],
+  [0.10, 0.22, 3, 'Boston'],
+  [0.80, 0.30, 7, 'Seattle'],
+  [0.79, 0.38, 5, 'Portland'],
+  [0.82, 0.48, 9, 'Los Angeles'],
+  [0.84, 0.58, 3, 'San Diego'],
+  [0.79, 0.42, 6, 'San Francisco'],
+  [0.82, 0.35, 4, 'Sacramento'],
+];
+
+function intensityColor(v, alpha = 1) {
+  if (v >= 8) return `rgba(255,58,92,${alpha})`;
+  if (v >= 5) return `rgba(255,100,50,${alpha})`;
+  if (v >= 3) return `rgba(255,157,47,${alpha})`;
+  return `rgba(255,220,60,${alpha})`;
+}
+
+function redrawMap() {
+  const W = canvas.width = canvas.offsetWidth;
+  const H = canvas.height = canvas.offsetHeight;
+
+  // Draw US outline (simplified SVG-like path on canvas)
+  ctx.clearRect(0, 0, W, H);
+
+  // Background gradient (ocean)
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0A1628');
+  bg.addColorStop(1, '#060D1A');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+  // USA simplified shape
+  ctx.fillStyle = 'rgba(20,27,48,0.9)';
+  ctx.strokeStyle = 'rgba(136,153,187,0.15)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  // Very simplified continental US polygon
+  const pts = [
+    [0.06,0.22],[0.12,0.18],[0.18,0.15],[0.28,0.14],[0.38,0.12],[0.50,0.13],
+    [0.62,0.15],[0.72,0.20],[0.80,0.18],[0.87,0.22],[0.90,0.32],[0.88,0.42],
+    [0.86,0.55],[0.88,0.62],[0.86,0.72],[0.82,0.78],[0.75,0.82],[0.68,0.88],
+    [0.55,0.92],[0.42,0.92],[0.32,0.88],[0.22,0.85],[0.15,0.80],[0.10,0.72],
+    [0.06,0.60],[0.04,0.48],[0.05,0.35],[0.06,0.22]
+  ];
+  ctx.moveTo(pts[0][0]*W, pts[0][1]*H);
+  pts.forEach(p => ctx.lineTo(p[0]*W, p[1]*H));
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Heatmap blobs
+  BASE_HOTSPOTS.forEach(([px, py, intensity]) => {
+    const x = px * W, y = py * H;
+    const r = (intensity / 10) * 80 + 20;
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+    const col = intensityColor(intensity);
+    grad.addColorStop(0, col.replace(/[\d.]+\)$/, '0.5)'));
+    grad.addColorStop(0.4, col.replace(/[\d.]+\)$/, '0.25)'));
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // City dots
+  BASE_HOTSPOTS.forEach(([px, py, intensity, label]) => {
+    const x = px * W, y = py * H;
+    ctx.beginPath();
+    ctx.arc(x, y, Math.min(intensity, 6) + 2, 0, Math.PI * 2);
+    ctx.fillStyle = intensityColor(intensity, 0.9);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    if (intensity >= 6) {
+      ctx.fillStyle = 'rgba(232,237,248,0.85)';
+      ctx.font = '10px Space Grotesk, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y - 10);
+    }
+  });
+
+  // Title
+  ctx.fillStyle = 'rgba(136,153,187,0.5)';
+  ctx.font = '11px DM Mono, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('UNITED STATES — ANONYMIZED THREAT REPORT', 16, H - 16);
+}
+
+window.addEventListener('load', redrawMap);
+window.addEventListener('resize', redrawMap);
+</script>
+</body>
+</html>

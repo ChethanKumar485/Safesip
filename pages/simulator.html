@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeSip — Drink Simulator</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="16" fill="#00FFB2"/>
+        <path d="M16 6 C16 6 10 12 10 18 C10 21.3 12.7 24 16 24 C19.3 24 22 21.3 22 18 C22 12 16 6 16 6Z" fill="#0A0F1E"/>
+        <circle cx="16" cy="17" r="3" fill="#00FFB2"/>
+      </svg>
+      <span>SafeSip</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="alerts.html">Alerts</a></li>
+      <li><a href="map.html">Heatmap</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header-inner">
+        <div>
+          <h1 class="page-title">Drink Simulator</h1>
+          <p class="page-subtitle">Select a substance and scan to see how SafeSip responds</p>
+        </div>
+        <div class="status-bar">
+          <span class="pulse-dot"></span>
+          Sensor Ready
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:40px; padding-bottom:60px;">
+    <div class="sim-layout">
+
+      <!-- LEFT: Device -->
+      <div class="sim-device">
+        <div class="sim-device-body" id="simDevice">
+          <div class="sim-screen" id="simScreen">
+            <div class="sim-scan-ring" id="simRing"></div>
+            <div class="sim-result-icon" id="simIcon">💧</div>
+            <div class="sim-result-text scanning" id="simStatus">READY</div>
+            <div class="sim-confidence" id="simConfBar">
+              <div class="sim-confidence-fill" id="simConfFill"></div>
+            </div>
+            <div class="sim-substance-name" id="simSubName">Place a drop on the sensor</div>
+          </div>
+          <div style="width:50px; height:8px; background:rgba(255,255,255,0.08); border-radius:4px;"></div>
+        </div>
+
+        <!-- Scan history mini -->
+        <div style="width:100%; max-width:260px;">
+          <div style="font-size:12px; color:var(--text-dim); margin-bottom:10px; font-family:var(--font-mono);">RECENT SCANS</div>
+          <div id="scanHistory" style="display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Controls -->
+      <div>
+        <div class="substances-panel">
+          <h3>Select Substance to Test</h3>
+          <div class="substance-grid" id="substanceGrid">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <button class="scan-button" id="scanBtn" onclick="startScan()">
+          🔬 Scan Drink
+        </button>
+        <button class="safe-button" onclick="selectSubstance('safe')">
+          Test with Clean Drink
+        </button>
+
+        <!-- Result card -->
+        <div class="result-card" id="resultCard">
+          <div class="result-title" id="resultTitle"></div>
+          <div class="result-detail-grid" id="resultGrid"></div>
+          <div id="resultDesc" style="font-size:14px; color:var(--text-dim); line-height:1.7; margin-bottom:20px;"></div>
+          <div id="resultActions"></div>
+        </div>
+
+        <!-- Info box -->
+        <div style="margin-top:24px; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);">
+          <div style="font-size:12px; font-weight:600; margin-bottom:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; font-family:var(--font-mono);">How the simulator works</div>
+          <p style="font-size:13px; color:var(--text-dim); line-height:1.7;">This simulates SafeSip's electrochemical biosensor response. In real-world use, the device dips into your drink, runs a 400ms voltammetric sweep, and classifies the result using on-device AI — all in under 0.8 seconds. This demo replicates the timing and alert behavior faithfully.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+const SUBSTANCES = [
+  { id: 'ghb', name: 'GHB', fullName: 'Gamma-Hydroxybutyrate', risk: 'high', category: 'danger', icon: '🔴',
+    desc: 'GHB is a central nervous system depressant used as a date rape drug. Colorless, odorless, slightly salty taste. Causes sedation, amnesia, and loss of consciousness at high doses. SafeSip detects it via oxidation peak at +0.58V.',
+    onset: '15–30 min', duration: '3–6 hrs', confidence: 97 },
+  { id: 'ket', name: 'Ketamine', fullName: 'Ketamine HCl', risk: 'high', category: 'warn', icon: '🟠',
+    desc: 'Ketamine is a dissociative anesthetic that causes hallucinations and disorientation. Commonly dissolved in drinks at venues. SafeSip detects its unique cathodic reduction signature at –0.3V.',
+    onset: '10–20 min', duration: '1–2 hrs', confidence: 94 },
+  { id: 'roh', name: 'Rohypnol', fullName: 'Flunitrazepam', risk: 'high', category: 'danger', icon: '🔴',
+    desc: 'Rohypnol is a powerful benzodiazepine 10× stronger than Valium. Causes profound sedation and anterograde amnesia. Modern formulations turn drinks blue — SafeSip detects it before color appears.',
+    onset: '15–25 min', duration: '6–12 hrs', confidence: 96 },
+  { id: 'mdma', name: 'MDMA', fullName: '3,4-Methylenedioxymethamphetamine', risk: 'medium', category: 'warn', icon: '🟡',
+    desc: 'MDMA (Ecstasy) is a stimulant-empathogen. While often taken voluntarily, it poses serious dangers when added to drinks without consent. SafeSip identifies it via catecholamine-like electrochemical signature.',
+    onset: '30–60 min', duration: '3–5 hrs', confidence: 91 },
+  { id: 'fen', name: 'Fentanyl', fullName: 'Fentanyl Citrate', risk: 'critical', category: 'danger', icon: '💀',
+    desc: 'Fentanyl is 100× more potent than morphine. Even micrograms can cause respiratory depression and death. SafeSip uses a specialized gold electrode to detect fentanyl analogs at concentrations as low as 0.1 μg/mL.',
+    onset: '5–15 min', duration: '1–2 hrs', confidence: 99 },
+  { id: 'scop', name: 'Scopolamine', fullName: 'Hyoscine / Burundanga', risk: 'high', category: 'danger', icon: '🔴',
+    desc: 'Scopolamine causes total amnesia and extreme suggestibility. Known as "Devil\'s Breath," it has been used in robbery and assault. Completely tasteless. SafeSip detects it via its muscarinic receptor-binding chemical signature.',
+    onset: '15–30 min', duration: '8–24 hrs', confidence: 88 },
+  { id: 'xan', name: 'Alprazolam', fullName: 'Xanax / Alprazolam', risk: 'medium', category: 'warn', icon: '🟠',
+    desc: 'Alprazolam is a common benzodiazepine that can be dissolved in drinks. Causes sedation, memory impairment, and disinhibition. SafeSip detects its triazolobenzodiazepine structure electrochemically.',
+    onset: '20–40 min', duration: '4–6 hrs', confidence: 92 },
+  { id: 'safe', name: 'Clean Drink', fullName: 'No Threats Found', risk: 'safe', category: 'safe', icon: '✅',
+    desc: 'No controlled substances detected. The drink is clear for consumption. SafeSip ran full 47-substance sweep and found no anomalous electrochemical signatures.',
+    onset: '—', duration: '—', confidence: 100 },
+];
+
+let selectedSubstance = null;
+let scanHistory = [];
+let scanning = false;
+
+// Build grid
+function buildGrid() {
+  const grid = document.getElementById('substanceGrid');
+  SUBSTANCES.filter(s => s.id !== 'safe').forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = `substance-btn ${s.category === 'danger' ? 'danger-sub' : ''}`;
+    btn.dataset.id = s.id;
+    btn.innerHTML = `
+      <span>${s.icon} ${s.name}</span>
+      <span class="substance-risk ${s.risk}">${s.risk.toUpperCase()}</span>
+    `;
+    btn.onclick = () => selectSubstance(s.id);
+    grid.appendChild(btn);
+  });
+}
+
+function selectSubstance(id) {
+  selectedSubstance = SUBSTANCES.find(s => s.id === id) || SUBSTANCES.find(s => s.id === 'safe');
+  document.querySelectorAll('.substance-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.querySelector(`[data-id="${id}"]`);
+  if (btn) btn.classList.add('selected');
+  resetDevice();
+}
+
+function resetDevice() {
+  const device = document.getElementById('simDevice');
+  const ring = document.getElementById('simRing');
+  const icon = document.getElementById('simIcon');
+  const status = document.getElementById('simStatus');
+  const fill = document.getElementById('simConfFill');
+  const subName = document.getElementById('simSubName');
+  device.className = 'sim-device-body';
+  ring.className = 'sim-scan-ring';
+  icon.textContent = '💧';
+  status.textContent = 'READY';
+  status.className = 'sim-result-text scanning';
+  fill.style.width = '0';
+  fill.style.background = 'var(--mint)';
+  subName.textContent = selectedSubstance ? `Selected: ${selectedSubstance.name}` : 'Place a drop on the sensor';
+  document.getElementById('resultCard').className = 'result-card';
+}
+
+function startScan() {
+  if (scanning) return;
+  if (!selectedSubstance) { alert('Please select a substance first.'); return; }
+  scanning = true;
+
+  const device = document.getElementById('simDevice');
+  const ring = document.getElementById('simRing');
+  const icon = document.getElementById('simIcon');
+  const status = document.getElementById('simStatus');
+  const fill = document.getElementById('simConfFill');
+  const subName = document.getElementById('simSubName');
+  const scanBtn = document.getElementById('scanBtn');
+
+  scanBtn.disabled = true;
+  scanBtn.textContent = '⏳ Scanning…';
+
+  const isSafe = selectedSubstance.id === 'safe';
+  device.className = 'sim-device-body scanning';
+  ring.className = 'sim-scan-ring active' + (isSafe ? '' : ' danger');
+  icon.textContent = '🔬';
+  status.textContent = 'ANALYZING…';
+  status.className = 'sim-result-text scanning';
+  subName.textContent = 'Running voltammetric sweep…';
+  fill.style.background = 'var(--mint)';
+
+  // Progress animation
+  let progress = 0;
+  const fillInterval = setInterval(() => {
+    progress += Math.random() * 8;
+    if (progress > 88) progress = 88;
+    fill.style.width = progress + '%';
+    const msgs = ['Sweeping –0.6V…', 'Peak detection…', 'AI classification…', 'Cross-referencing…'];
+    subName.textContent = msgs[Math.floor(progress / 25)];
+  }, 120);
+
+  setTimeout(() => {
+    clearInterval(fillInterval);
+    fill.style.width = selectedSubstance.confidence + '%';
+    fill.style.background = isSafe ? 'var(--mint)' : 'var(--danger)';
+    device.className = `sim-device-body ${isSafe ? 'scanning' : 'detected'}`;
+
+    icon.textContent = isSafe ? '✅' : '🚨';
+    status.textContent = isSafe ? 'SAFE' : '⚠ THREAT';
+    status.className = `sim-result-text ${isSafe ? 'safe' : 'danger'}`;
+    subName.textContent = selectedSubstance.name + ' — ' + selectedSubstance.confidence + '% confidence';
+
+    if (!isSafe) {
+      ring.className = 'sim-scan-ring active danger';
+      triggerSOS();
+    }
+
+    showResult(selectedSubstance);
+    addToHistory(selectedSubstance);
+    scanning = false;
+    scanBtn.disabled = false;
+    scanBtn.textContent = '🔬 Scan Drink';
+    if (!isSafe) {
+      scanBtn.className = 'scan-button danger';
+      setTimeout(() => { scanBtn.className = 'scan-button'; }, 5000);
+    }
+  }, 1800);
+}
+
+function showResult(sub) {
+  const card = document.getElementById('resultCard');
+  const title = document.getElementById('resultTitle');
+  const grid = document.getElementById('resultGrid');
+  const desc = document.getElementById('resultDesc');
+  const actions = document.getElementById('resultActions');
+  const isSafe = sub.id === 'safe';
+
+  card.className = `result-card visible ${isSafe ? 'safe-result' : 'danger-result'}`;
+  title.className = `result-title ${isSafe ? 'safe' : 'danger'}`;
+  title.innerHTML = `${sub.icon} ${isSafe ? 'Drink Safe' : sub.name + ' Detected'}`;
+
+  grid.innerHTML = `
+    <div class="result-detail-item"><label>Substance</label><span>${sub.fullName}</span></div>
+    <div class="result-detail-item"><label>Confidence</label><span>${sub.confidence}%</span></div>
+    <div class="result-detail-item"><label>Risk Level</label><span style="color:${isSafe ? 'var(--mint)' : sub.risk === 'critical' ? 'var(--danger)' : 'var(--warn)'}">${sub.risk.toUpperCase()}</span></div>
+    <div class="result-detail-item"><label>Onset Time</label><span>${sub.onset}</span></div>
+    <div class="result-detail-item"><label>Duration</label><span>${sub.duration}</span></div>
+    <div class="result-detail-item"><label>Scan Time</label><span>0.8s</span></div>
+  `;
+  desc.textContent = sub.desc;
+
+  if (!isSafe) {
+    actions.innerHTML = `
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn-danger" onclick="alert('In real SafeSip: SMS sent to 3 emergency contacts with GPS location.')">🚨 Send SOS</button>
+        <button class="btn-secondary" onclick="alert('Emergency services dialed.')">📞 Call 911</button>
+        <button class="btn-ghost" onclick="resetDevice(); scanning=false;">↩ New Scan</button>
+      </div>
+    `;
+  } else {
+    actions.innerHTML = `<button class="btn-ghost" onclick="resetDevice(); scanning=false;">↩ New Scan</button>`;
+  }
+}
+
+function addToHistory(sub) {
+  scanHistory.unshift(sub);
+  if (scanHistory.length > 5) scanHistory.pop();
+  const hist = document.getElementById('scanHistory');
+  hist.innerHTML = scanHistory.map(s => `
+    <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--surface); border:1px solid var(--border); border-radius:6px; font-size:12px;">
+      <span>${s.icon}</span>
+      <span style="flex:1;">${s.name}</span>
+      <span class="feed-badge ${s.id === 'safe' ? 'safe' : s.category}">${s.id === 'safe' ? 'SAFE' : 'THREAT'}</span>
+    </div>
+  `).join('');
+}
+
+function triggerSOS() {
+  // Visual SOS flash
+  const flash = document.createElement('div');
+  flash.style.cssText = `
+    position:fixed; inset:0; background:rgba(255,58,92,0.15);
+    z-index:9999; pointer-events:none;
+    animation: flash-out 0.8s ease forwards;
+  `;
+  const style = document.createElement('style');
+  style.textContent = `@keyframes flash-out { 0%{opacity:1} 100%{opacity:0} }`;
+  document.head.appendChild(style);
+  document.body.appendChild(flash);
+  setTimeout(() => { flash.remove(); style.remove(); }, 800);
+}
+
+buildGrid();
+selectSubstance('ghb');
+</script>
+</body>
+</html>

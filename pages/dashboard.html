@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeSip — Live Safety Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="16" fill="#00FFB2"/>
+        <path d="M16 6 C16 6 10 12 10 18 C10 21.3 12.7 24 16 24 C19.3 24 22 21.3 22 18 C22 12 16 6 16 6Z" fill="#0A0F1E"/>
+        <circle cx="16" cy="17" r="3" fill="#00FFB2"/>
+      </svg>
+      <span>SafeSip</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="simulator.html">Simulator</a></li>
+      <li><a href="alerts.html">Alerts</a></li>
+      <li><a href="map.html">Heatmap</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header-inner">
+        <div>
+          <h1 class="page-title">Live Safety Dashboard</h1>
+          <p class="page-subtitle">Real-time threat monitoring across connected devices</p>
+        </div>
+        <div class="status-bar" id="globalStatus">
+          <span class="pulse-dot"></span>
+          <span id="statusText">All Clear — 847 Devices Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:32px; padding-bottom:60px;">
+
+    <!-- METRICS -->
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <span class="metric-label">Scans Today</span>
+          <span class="metric-icon">🔬</span>
+        </div>
+        <div class="metric-value" id="metricScans">0</div>
+        <div class="metric-change up" id="metricScansChange">↑ +12% from yesterday</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <span class="metric-label">Threats Detected</span>
+          <span class="metric-icon">⚠️</span>
+        </div>
+        <div class="metric-value danger" id="metricThreats">0</div>
+        <div class="metric-change" id="metricThreatsChange">Across 6 cities</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <span class="metric-label">SOS Alerts Sent</span>
+          <span class="metric-icon">🚨</span>
+        </div>
+        <div class="metric-value" id="metricSOS">0</div>
+        <div class="metric-change up">↑ Avg response: 3m 12s</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <span class="metric-label">Accuracy Rate</span>
+          <span class="metric-icon">✅</span>
+        </div>
+        <div class="metric-value" id="metricAccuracy">0%</div>
+        <div class="metric-change up">↑ 0 false positives today</div>
+      </div>
+    </div>
+
+    <!-- ACTIVE ALERT (conditionally shown) -->
+    <div class="alert-panel" id="activeAlert" style="display:none; margin-bottom:24px;">
+      <div class="alert-panel-header">
+        🚨 ACTIVE THREAT DETECTED
+      </div>
+      <div class="alert-detail">
+        <div class="alert-detail-item">
+          <label>Substance</label>
+          <span id="alertSubstance">GHB</span>
+        </div>
+        <div class="alert-detail-item">
+          <label>Location</label>
+          <span id="alertLocation">The Grand, Austin TX</span>
+        </div>
+        <div class="alert-detail-item">
+          <label>Time</label>
+          <span id="alertTime">--:--</span>
+        </div>
+      </div>
+      <div class="alert-actions">
+        <button class="btn-danger" onclick="dismissAlert()">✓ Mark Responded</button>
+        <button class="btn-secondary" onclick="dismissAlert()">Dismiss</button>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-row" style="margin-bottom:24px;">
+      <div class="chart-card">
+        <div class="chart-card-title">📈 Scans per Hour (Today)</div>
+        <canvas id="hourlyChart" height="160"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">🧪 Top Substances</div>
+        <canvas id="substanceChart" height="160"></canvas>
+      </div>
+    </div>
+
+    <!-- LIVE FEED -->
+    <div class="live-feed">
+      <div class="live-feed-header">
+        <div class="live-feed-title">
+          <span class="live-dot"></span>
+          Live Scan Feed
+        </div>
+        <span style="font-size:12px; color:var(--text-dim); font-family:var(--font-mono);" id="feedCount">0 events</span>
+      </div>
+      <div id="liveFeed"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+// ── DASHBOARD DATA ──
+const substances = [
+  { name: 'SAFE', risk: 'safe', weight: 70 },
+  { name: 'GHB', risk: 'danger', weight: 8 },
+  { name: 'Ketamine', risk: 'warn', weight: 6 },
+  { name: 'Rohypnol', risk: 'critical', weight: 4 },
+  { name: 'MDMA', risk: 'warn', weight: 5 },
+  { name: 'Fentanyl', risk: 'critical', weight: 2 },
+  { name: 'Xanax', risk: 'warn', weight: 3 },
+  { name: 'Scopolamine', risk: 'danger', weight: 2 },
+];
+
+const venues = [
+  'The Monarch, NYC', 'Club Noire, LA', 'The Grand, Austin TX',
+  'Velvet Room, Chicago', 'Prism, Miami', 'The Vault, Nashville',
+  'Electric, Denver', 'Pulse, Seattle', 'The Fox, Atlanta',
+];
+
+function weightedRandom(arr) {
+  const total = arr.reduce((s, x) => s + x.weight, 0);
+  let r = Math.random() * total;
+  for (const x of arr) { r -= x.weight; if (r <= 0) return x; }
+  return arr[0];
+}
+
+function now() {
+  return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+// ── METRICS ──
+let scansToday = 0, threatsToday = 0, sosToday = 0;
+
+function animateNum(el, target, suffix = '') {
+  const start = parseInt(el.textContent) || 0;
+  const dur = 800;
+  const t0 = performance.now();
+  function step(t) {
+    const p = Math.min((t - t0) / dur, 1);
+    const val = Math.floor(start + (target - start) * (1 - Math.pow(1 - p, 3)));
+    el.textContent = val + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function updateMetrics(sub) {
+  scansToday++;
+  if (sub.risk !== 'safe') { threatsToday++; if (sub.risk === 'critical' || sub.risk === 'danger') sosToday++; }
+  animateNum(document.getElementById('metricScans'), scansToday);
+  animateNum(document.getElementById('metricThreats'), threatsToday);
+  animateNum(document.getElementById('metricSOS'), sosToday);
+  document.getElementById('metricAccuracy').textContent = '98.4%';
+}
+
+// ── LIVE FEED ──
+let feedCount = 0;
+const feedEl = document.getElementById('liveFeed');
+
+function addFeedItem(sub, venue) {
+  feedCount++;
+  document.getElementById('feedCount').textContent = feedCount + ' events';
+
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+  item.innerHTML = `
+    <span class="feed-time">${now()}</span>
+    <span class="feed-substance">${sub.name === 'SAFE' ? '✓ Clean Drink' : sub.name}</span>
+    <span class="feed-location">${venue}</span>
+    <span class="feed-badge ${sub.risk}">${sub.name === 'SAFE' ? 'SAFE' : sub.risk.toUpperCase()}</span>
+  `;
+  feedEl.insertBefore(item, feedEl.firstChild);
+  if (feedEl.children.length > 20) feedEl.removeChild(feedEl.lastChild);
+
+  // Show alert panel for critical
+  if (sub.risk === 'critical' || sub.risk === 'danger') {
+    const panel = document.getElementById('activeAlert');
+    panel.style.display = 'block';
+    document.getElementById('alertSubstance').textContent = sub.name;
+    document.getElementById('alertLocation').textContent = venue;
+    document.getElementById('alertTime').textContent = now();
+    const gs = document.getElementById('globalStatus');
+    gs.className = 'status-bar danger';
+    document.getElementById('statusText').textContent = `⚠ THREAT ACTIVE — ${sub.name} at ${venue}`;
+    setTimeout(() => {
+      gs.className = 'status-bar';
+      document.getElementById('statusText').textContent = `All Clear — 847 Devices Active`;
+    }, 8000);
+  }
+}
+
+function dismissAlert() {
+  document.getElementById('activeAlert').style.display = 'none';
+}
+
+// ── CHARTS ──
+function drawHourlyChart() {
+  const canvas = document.getElementById('hourlyChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio || 600;
+  canvas.height = 160 * window.devicePixelRatio || 160;
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+  const W = canvas.offsetWidth || 600, H = 160;
+
+  const hours = Array.from({length: 24}, (_, i) => i);
+  const values = hours.map(h => {
+    if (h < 18) return Math.floor(20 + Math.random() * 40);
+    return Math.floor(80 + Math.random() * 120); // night spike
+  });
+  const threats = values.map(v => Math.floor(v * 0.08 * Math.random()));
+
+  const maxV = Math.max(...values);
+  const pad = { top: 16, right: 16, bottom: 28, left: 36 };
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+  const barW = cW / 24 - 2;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + i * cH / 4;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(W - pad.right, y);
+    ctx.stroke();
+  }
+
+  // Bars
+  values.forEach((v, i) => {
+    const x = pad.left + i * (cW / 24);
+    const bH = (v / maxV) * cH;
+    const y = pad.top + cH - bH;
+    const gradient = ctx.createLinearGradient(0, y, 0, y + bH);
+    gradient.addColorStop(0, 'rgba(0,255,178,0.8)');
+    gradient.addColorStop(1, 'rgba(0,255,178,0.2)');
+    ctx.fillStyle = gradient;
+    ctx.roundRect(x + 1, y, barW, bH, 2);
+    ctx.fill();
+
+    if (threats[i] > 0) {
+      const tH = (threats[i] / maxV) * cH;
+      const ty = pad.top + cH - tH;
+      ctx.fillStyle = 'rgba(255,58,92,0.9)';
+      ctx.roundRect(x + 1, ty, barW, tH, 2);
+      ctx.fill();
+    }
+  });
+
+  // X labels
+  ctx.fillStyle = 'rgba(136,153,187,0.6)';
+  ctx.font = '10px DM Mono, monospace';
+  ctx.textAlign = 'center';
+  [0, 6, 12, 18, 23].forEach(i => {
+    const x = pad.left + i * (cW / 24) + barW / 2;
+    ctx.fillText(i + 'h', x, H - 6);
+  });
+}
+
+function drawSubstanceChart() {
+  const canvas = document.getElementById('substanceChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio || 280;
+  canvas.height = 160 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+  const W = canvas.offsetWidth || 280, H = 160;
+
+  const data = [
+    { name: 'GHB', value: 34, color: '#FF3A5C' },
+    { name: 'Ketamine', value: 22, color: '#FF9D2F' },
+    { name: 'MDMA', value: 18, color: '#FFD93D' },
+    { name: 'Rohypnol', value: 14, color: '#FF6B6B' },
+    { name: 'Other', value: 12, color: '#8899BB' },
+  ];
+
+  const total = data.reduce((s, d) => s + d.value, 0);
+  const cx = W / 2, cy = H / 2, r = Math.min(W, H) / 2 - 20;
+  let angle = -Math.PI / 2;
+
+  data.forEach(d => {
+    const sweep = (d.value / total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + sweep);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    ctx.strokeStyle = '#0A0F1E';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    angle += sweep;
+  });
+
+  // Center
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 0.5, 0, Math.PI * 2);
+  ctx.fillStyle = '#0E1428';
+  ctx.fill();
+  ctx.fillStyle = '#E8EDF8';
+  ctx.font = 'bold 14px Space Grotesk, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Threats', cx, cy - 8);
+  ctx.font = '11px DM Mono, monospace';
+  ctx.fillStyle = '#8899BB';
+  ctx.fillText('by type', cx, cy + 10);
+}
+
+// ── INIT ──
+window.addEventListener('load', () => {
+  drawHourlyChart();
+  drawSubstanceChart();
+
+  // Initial events
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const sub = weightedRandom(substances);
+      const venue = venues[Math.floor(Math.random() * venues.length)];
+      addFeedItem(sub, venue);
+      updateMetrics(sub);
+    }, i * 200);
+  }
+
+  // Live updates
+  setInterval(() => {
+    const sub = weightedRandom(substances);
+    const venue = venues[Math.floor(Math.random() * venues.length)];
+    addFeedItem(sub, venue);
+    updateMetrics(sub);
+  }, 3500);
+});
+</script>
+</body>
+</html>

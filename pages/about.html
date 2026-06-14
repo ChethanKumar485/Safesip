@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeSip — About & Science</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav scrolled">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="16" fill="#00FFB2"/>
+        <path d="M16 6 C16 6 10 12 10 18 C10 21.3 12.7 24 16 24 C19.3 24 22 21.3 22 18 C22 12 16 6 16 6Z" fill="#0A0F1E"/>
+        <circle cx="16" cy="17" r="3" fill="#00FFB2"/>
+      </svg>
+      <span>SafeSip</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="simulator.html">Simulator</a></li>
+      <li><a href="alerts.html">Alerts</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="container">
+      <h1 class="page-title">About SafeSip</h1>
+      <p class="page-subtitle" style="margin-top:8px;">The science, the mission, and the technology behind the device</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:60px; padding-bottom:80px; max-width:860px;">
+
+    <!-- Mission -->
+    <div style="margin-bottom:60px;">
+      <div class="section-label">OUR MISSION</div>
+      <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; line-height:1.2; margin-bottom:24px;">No one should fear what's in their drink.</h2>
+      <p style="font-size:16px; color:var(--text-dim); line-height:1.8; margin-bottom:16px;">
+        SafeSip was founded after our co-founder's sister was hospitalized following a drink-spiking incident at a university event. The existing "solutions" — test strips, nail polishes, apps — were unreliable, slow, and socially awkward. We set out to build something that actually works.
+      </p>
+      <p style="font-size:16px; color:var(--text-dim); line-height:1.8;">
+        Two years and 120,000 spectral training samples later, SafeSip is the first keychain-sized electrochemical biosensor with on-device AI classification, capable of detecting 47 controlled substances in under one second with 98.4% accuracy.
+      </p>
+    </div>
+
+    <!-- Technology Deep Dive -->
+    <div style="margin-bottom:60px;">
+      <div class="section-label">TECHNOLOGY</div>
+      <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:32px;">How It Actually Works</h2>
+
+      <div style="display:flex; flex-direction:column; gap:0;">
+        <div style="display:grid; grid-template-columns:60px 1fr; gap:24px; padding:28px 0; border-bottom:1px solid var(--border);">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--mint); padding-top:4px;">01</div>
+          <div>
+            <h3 style="font-size:1rem; font-weight:600; margin-bottom:10px;">Three-Electrode Electrochemical Cell</h3>
+            <p style="font-size:14px; color:var(--text-dim); line-height:1.7;">SafeSip uses a working electrode (carbon), a reference electrode (Ag/AgCl), and a counter electrode (gold). When a droplet is applied, the device performs cyclic voltammetry — sweeping voltage from –0.6V to +1.2V and back in 400ms, recording the resulting current. This current vs. voltage profile is a unique fingerprint for every compound class.</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:60px 1fr; gap:24px; padding:28px 0; border-bottom:1px solid var(--border);">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--mint); padding-top:4px;">02</div>
+          <div>
+            <h3 style="font-size:1rem; font-weight:600; margin-bottom:10px;">On-Device Neural Network (ARM Cortex-M4)</h3>
+            <p style="font-size:14px; color:var(--text-dim); line-height:1.7;">The raw voltammogram (200 data points) is fed into a 4-layer, quantized INT8 neural network running on an ARM Cortex-M4F at 80MHz. Inference takes 180ms. The model was trained on 120,000 samples across 47 substance classes, including multiple concentration levels and common drink matrices (alcohol, carbonation, acidity).</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:60px 1fr; gap:24px; padding:28px 0; border-bottom:1px solid var(--border);">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--mint); padding-top:4px;">03</div>
+          <div>
+            <h3 style="font-size:1rem; font-weight:600; margin-bottom:10px;">Bluetooth 5.3 LE + Companion App</h3>
+            <p style="font-size:14px; color:var(--text-dim); line-height:1.7;">Results are transmitted via BLE to the companion app in &lt;50ms. The app handles SMS dispatch, GPS logging, and the companion network protocol. All chemical data stays on the device — only the classification result and timestamp are transmitted.</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:60px 1fr; gap:24px; padding:28px 0; border-bottom:1px solid var(--border);">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--mint); padding-top:4px;">04</div>
+          <div>
+            <h3 style="font-size:1rem; font-weight:600; margin-bottom:10px;">Disposable Sensor Tips (60-Use)</h3>
+            <p style="font-size:14px; color:var(--text-dim); line-height:1.7;">Each sensor tip lasts 60 scans. Replacement tips ship monthly via subscription. The electrode surface is functionalized with molecularly imprinted polymers (MIPs) that enhance selectivity for high-priority targets like GHB and fentanyl analogs.</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:60px 1fr; gap:24px; padding:28px 0;">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--mint); padding-top:4px;">05</div>
+          <div>
+            <h3 style="font-size:1rem; font-weight:600; margin-bottom:10px;">OTA Firmware & Library Updates</h3>
+            <p style="font-size:14px; color:var(--text-dim); line-height:1.7;">New compounds are added via monthly over-the-air updates. Our forensic chemistry team continuously monitors DEA drug seizure databases and academic literature to keep the detection library current. Users receive push notifications when new substances are added.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Specs -->
+    <div style="margin-bottom:60px;">
+      <div class="section-label">SPECIFICATIONS</div>
+      <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:24px;">Technical Specifications</h2>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden;">
+        <table style="width:100%; border-collapse:collapse;">
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim); width:40%;">Detection Method</td>
+              <td style="padding:14px 20px; font-size:14px;">Cyclic Voltammetry + AI Classification</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Substances Detected</td>
+              <td style="padding:14px 20px; font-size:14px;">47 (expandable via OTA)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Detection Accuracy</td>
+              <td style="padding:14px 20px; font-size:14px;">98.4% (validated, 12,000 blind tests)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Scan Time</td>
+              <td style="padding:14px 20px; font-size:14px;">0.8 seconds (400ms CV + 180ms AI + 220ms comms)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Processor</td>
+              <td style="padding:14px 20px; font-size:14px;">ARM Cortex-M4F @ 80MHz (STM32L4)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Wireless</td>
+              <td style="padding:14px 20px; font-size:14px;">Bluetooth 5.3 LE (500m range)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Battery</td>
+              <td style="padding:14px 20px; font-size:14px;">CR2032 · 200 scans · 6-month standby</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">IP Rating</td>
+              <td style="padding:14px 20px; font-size:14px;">IP68 (1m water, 30 minutes)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Dimensions</td>
+              <td style="padding:14px 20px; font-size:14px;">52mm × 22mm × 9mm</td>
+            </tr>
+            <tr>
+              <td style="padding:14px 20px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);">Weight</td>
+              <td style="padding:14px 20px; font-size:14px;">18g including battery</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Awards section placeholder -->
+    <div>
+      <div class="section-label">RECOGNITION</div>
+      <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:24px;">Awards & Recognition</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:24px; text-align:center;">
+          <div style="font-size:32px; margin-bottom:12px;">🏆</div>
+          <div style="font-weight:600; font-size:14px; margin-bottom:6px;">CES Innovation Award</div>
+          <div style="font-size:12px; color:var(--text-dim);">Personal Safety · 2025</div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:24px; text-align:center;">
+          <div style="font-size:32px; margin-bottom:12px;">🔬</div>
+          <div style="font-weight:600; font-size:14px; margin-bottom:6px;">MIT SafetyTech Grant</div>
+          <div style="font-size:12px; color:var(--text-dim);">$250,000 · 2024</div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:24px; text-align:center;">
+          <div style="font-size:32px; margin-bottom:12px;">⚡</div>
+          <div style="font-weight:600; font-size:14px; margin-bottom:6px;">TechCrunch Disrupt</div>
+          <div style="font-size:12px; color:var(--text-dim);">Finalist · Health & Safety</div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:24px; text-align:center;">
+          <div style="font-size:32px; margin-bottom:12px;">🛡️</div>
+          <div style="font-weight:600; font-size:14px; margin-bottom:6px;">FBI SafeGuard Partner</div>
+          <div style="font-size:12px; color:var(--text-dim);">Certified Technology 2025</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

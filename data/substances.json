@@ -1,0 +1,47 @@
+{
+  "version": "2.1.0",
+  "last_updated": "2025-11-14",
+  "total_substances": 47,
+  "categories": {
+    "sedative_hypnotics": {
+      "label": "Sedative-Hypnotics",
+      "substances": [
+        { "id": "ghb", "name": "GHB", "full_name": "Gamma-Hydroxybutyrate", "risk": "critical", "detection_voltage": "+0.58V", "min_detectable_conc": "0.5 mg/mL", "onset_min": 15, "duration_hrs": 6, "color_odor": "Colorless, slightly salty", "street_names": ["G", "Liquid X", "Fantasy", "Grievous Bodily Harm"], "description": "CNS depressant causing sedation and amnesia. Common date rape drug.", "confidence": 97 },
+        { "id": "rohypnol", "name": "Rohypnol", "full_name": "Flunitrazepam", "risk": "critical", "detection_voltage": "-0.45V", "min_detectable_conc": "0.01 mg/mL", "onset_min": 20, "duration_hrs": 10, "color_odor": "Colorless (modern formulation turns drink blue)", "street_names": ["Roofies", "Forget-Me Pill", "Mexican Valium", "R2"], "description": "Benzodiazepine 10x stronger than Valium. Causes profound amnesia.", "confidence": 96 },
+        { "id": "clonazepam", "name": "Clonazepam", "full_name": "Clonazepam (Klonopin)", "risk": "high", "detection_voltage": "-0.38V", "min_detectable_conc": "0.02 mg/mL", "onset_min": 30, "duration_hrs": 8, "color_odor": "Colorless, tasteless", "street_names": ["Kpin", "Benzo"], "description": "Long-acting benzodiazepine with sedative effects.", "confidence": 89 },
+        { "id": "alprazolam", "name": "Alprazolam", "full_name": "Alprazolam (Xanax)", "risk": "high", "detection_voltage": "-0.36V", "min_detectable_conc": "0.02 mg/mL", "onset_min": 25, "duration_hrs": 5, "color_odor": "Colorless, tasteless", "street_names": ["Xan", "Bars", "Zannies"], "description": "Common benzodiazepine causing sedation and disinhibition.", "confidence": 92 },
+        { "id": "diazepam", "name": "Diazepam", "full_name": "Diazepam (Valium)", "risk": "high", "detection_voltage": "-0.40V", "min_detectable_conc": "0.05 mg/mL", "onset_min": 30, "duration_hrs": 8, "color_odor": "Colorless, slightly bitter", "street_names": ["Valium", "Blues"], "description": "Classic benzodiazepine with long duration.", "confidence": 90 }
+      ]
+    },
+    "dissociatives": {
+      "label": "Dissociatives",
+      "substances": [
+        { "id": "ketamine", "name": "Ketamine", "full_name": "Ketamine HCl", "risk": "high", "detection_voltage": "-0.30V", "min_detectable_conc": "0.1 mg/mL", "onset_min": 15, "duration_hrs": 2, "color_odor": "Colorless, slightly bitter", "street_names": ["Special K", "Kit Kat", "Ket", "Vitamin K"], "description": "Dissociative anesthetic causing hallucinations and disorientation.", "confidence": 94 },
+        { "id": "pcp", "name": "PCP", "full_name": "Phencyclidine", "risk": "critical", "detection_voltage": "+0.72V", "min_detectable_conc": "0.05 mg/mL", "onset_min": 10, "duration_hrs": 6, "color_odor": "Colorless, chemical taste", "street_names": ["Angel Dust", "Sherm"], "description": "Potent hallucinogen causing psychosis and extreme agitation.", "confidence": 91 }
+      ]
+    },
+    "opioids": {
+      "label": "Opioids",
+      "substances": [
+        { "id": "fentanyl", "name": "Fentanyl", "full_name": "Fentanyl Citrate", "risk": "critical", "detection_voltage": "+0.62V", "min_detectable_conc": "0.0001 mg/mL", "onset_min": 8, "duration_hrs": 1.5, "color_odor": "Colorless, odorless, tasteless", "street_names": ["China White", "Dance Fever", "Friend"], "description": "100x more potent than morphine. Lethal at microgram doses.", "confidence": 99 },
+        { "id": "carfentanil", "name": "Carfentanil", "full_name": "Carfentanil", "risk": "critical", "detection_voltage": "+0.63V", "min_detectable_conc": "0.00001 mg/mL", "onset_min": 5, "duration_hrs": 1, "color_odor": "Colorless, odorless", "street_names": ["Elephant tranquilizer"], "description": "10,000x more potent than morphine. Extremely lethal.", "confidence": 97 },
+        { "id": "hydrocodone", "name": "Hydrocodone", "full_name": "Hydrocodone Bitartrate", "risk": "high", "detection_voltage": "+0.55V", "min_detectable_conc": "0.1 mg/mL", "onset_min": 30, "duration_hrs": 4, "color_odor": "Colorless, slightly sweet", "street_names": ["Vicodin", "Norco", "Hydro"], "description": "Semi-synthetic opioid analgesic.", "confidence": 88 }
+      ]
+    },
+    "stimulants": {
+      "label": "Stimulants & Empathogens",
+      "substances": [
+        { "id": "mdma", "name": "MDMA", "full_name": "3,4-Methylenedioxymethamphetamine", "risk": "medium", "detection_voltage": "+0.45V", "min_detectable_conc": "0.2 mg/mL", "onset_min": 45, "duration_hrs": 4, "color_odor": "Colorless, slightly bitter", "street_names": ["Ecstasy", "Molly", "E", "X"], "description": "Stimulant-empathogen. Dangerous when non-consensually administered.", "confidence": 91 },
+        { "id": "meth", "name": "Methamphetamine", "full_name": "Methamphetamine HCl", "risk": "high", "detection_voltage": "+0.48V", "min_detectable_conc": "0.1 mg/mL", "onset_min": 15, "duration_hrs": 8, "color_odor": "Colorless, slightly bitter", "street_names": ["Crystal", "Ice", "Tina", "Crank"], "description": "Highly addictive CNS stimulant with dangerous cardiovascular effects.", "confidence": 93 },
+        { "id": "cocaine", "name": "Cocaine", "full_name": "Cocaine HCl", "risk": "medium", "detection_voltage": "+0.50V", "min_detectable_conc": "0.5 mg/mL", "onset_min": 10, "duration_hrs": 1, "color_odor": "Colorless, numb/bitter taste", "street_names": ["Coke", "Snow", "Blow", "Charlie"], "description": "CNS stimulant causing euphoria, increased heart rate.", "confidence": 95 }
+      ]
+    },
+    "anticholinergics": {
+      "label": "Anticholinergics",
+      "substances": [
+        { "id": "scopolamine", "name": "Scopolamine", "full_name": "Hyoscine / Scopolamine", "risk": "critical", "detection_voltage": "+0.35V", "min_detectable_conc": "0.1 mg/mL", "onset_min": 20, "duration_hrs": 16, "color_odor": "Colorless, tasteless, odorless", "street_names": ["Devil's Breath", "Burundanga", "Scopo"], "description": "Causes complete amnesia and extreme suggestibility. Used in robbery and assault.", "confidence": 88 },
+        { "id": "atropine", "name": "Atropine", "full_name": "Atropine Sulfate", "risk": "high", "detection_voltage": "+0.32V", "min_detectable_conc": "0.2 mg/mL", "onset_min": 15, "duration_hrs": 4, "color_odor": "Colorless, bitter taste", "street_names": ["Atropa", "Belladonna extract"], "description": "Anticholinergic causing hallucinations and disorientation.", "confidence": 85 }
+      ]
+    }
+  }
+}
