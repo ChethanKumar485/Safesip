@@ -145,6 +145,44 @@ safesip/
 
 ---
 
+## 📸Screen-shot
+
+<img width="1902" height="845" alt="Screenshot 2026-06-14 181013" src="https://github.com/user-attachments/assets/39dbe6be-648b-4d49-b8f9-b64f07d8f6ed" />
+
+---
+
+<img width="1896" height="479" alt="Screenshot 2026-06-14 181111" src="https://github.com/user-attachments/assets/d77ed1de-d2d9-484b-991b-2f94da0316d3" />
+
+---
+<img width="1376" height="622" alt="Screenshot 2026-06-14 181126" src="https://github.com/user-attachments/assets/0ec9bf12-ccfb-473b-855f-e3080442514f" />
+
+---
+<img width="1103" height="453" alt="Screenshot 2026-06-14 181145" src="https://github.com/user-attachments/assets/fa08a56f-9ebc-4e06-b1e7-23acd2aa837b" />
+
+---
+<img width="839" height="594" alt="Screenshot 2026-06-14 181159" src="https://github.com/user-attachments/assets/f0f19e03-95ef-4150-b01a-01e77fc6186c" />
+
+---
+<img width="1102" height="775" alt="Screenshot 2026-06-14 181311" src="https://github.com/user-attachments/assets/428412ce-9c3a-4aa2-b1eb-7ed86d236d62" />
+
+
+---
+<img width="1265" height="699" alt="Screenshot 2026-06-14 181358" src="https://github.com/user-attachments/assets/26f1438c-e8dc-418a-a9e0-c169581e3052" />
+
+---
+<img width="565" height="766" alt="Screenshot 2026-06-14 181422" src="https://github.com/user-attachments/assets/4036a174-a77a-46a1-be2a-8434206f5f25" />
+
+---
+<img width="942" height="562" alt="Screenshot 2026-06-14 181513" src="https://github.com/user-attachments/assets/286c96f4-cdee-42f1-9b2f-287df9fcddf8" />
+
+---
+<img width="957" height="363" alt="Screenshot 2026-06-14 181530" src="https://github.com/user-attachments/assets/a19f5232-935c-43c2-9fab-f22df9ec53e9" />
+
+---
+<img width="953" height="646" alt="Screenshot 2026-06-14 181613" src="https://github.com/user-attachments/assets/fbd70c6e-bd15-4a5d-8be0-2d36fa3b0fc1" />
+
+
+
 ## Quick Start
 
 ### Option 1 — Open directly in browser (zero setup)
