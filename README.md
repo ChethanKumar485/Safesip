@@ -354,7 +354,7 @@ The full database is in `data/substances.json`. Here's a summary by category:
 Pull requests welcome. For major changes, open an issue first.
 
 ```bash
-git clone https://github.com/yourusername/safesip.git
+git clone https://github.com/ChethanKumar485/safesip.git
 cd safesip
 # Make changes
 # Test by opening index.html in browser
